@@ -13,4 +13,4 @@ jobs:
   activity-manager:
     runs-on: ubuntu-latest
     steps:
-      - uses: sidroded/git-hub-manager@master
+      - uses: sidroded/git-hub-manager@v1
