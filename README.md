@@ -40,7 +40,7 @@ on:
 
 jobs:
   activity-manager:
-    uses: sidroded/.github/.github/workflows/github-activity-manager.yaml@master
+    uses: sidroded/.github/.github/workflows/github-activity-manager.yaml@v1
 ```
 
 3. Go to **Settings → Actions → General → Workflow permissions**.
