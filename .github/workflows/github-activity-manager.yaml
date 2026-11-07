@@ -17,7 +17,7 @@ jobs:
       - name: Decide whether to commit
         id: decision
         env:
-          EVENT_NAME: github.event_name
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             echo "commit=true" >> "$GITHUB_OUTPUT"
