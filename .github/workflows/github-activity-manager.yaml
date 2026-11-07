@@ -1,9 +1,9 @@
-
 name: Activity Manager
 
 on:
   schedule:
     - cron: '0 */6 * * *'
+  workflow_call:
   workflow_dispatch:
 
 permissions:
