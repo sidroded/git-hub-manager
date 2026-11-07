@@ -14,12 +14,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Decide whether to commit (55%)
+      - name: Decide whether to commit
         id: decision
+        env:
+          EVENT_NAME: github.event_name
         run: |
-          if [ $((RANDOM % 100)) -lt 55 ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             echo "commit=true" >> "$GITHUB_OUTPUT"
-            echo "Commit selected!"
+            echo "Manual trigger: commit is mandatory!"
+          elif [ $((RANDOM % 100)) -lt 55 ]; then
+            echo "commit=true" >> "$GITHUB_OUTPUT"
+            echo "Commit selected (55%)!"
           else
             echo "commit=false" >> "$GITHUB_OUTPUT"
             echo "Skipping this run."
