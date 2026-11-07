@@ -38,9 +38,14 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   activity-manager:
-    uses: sidroded/.github/.github/workflows/github-activity-manager.yaml@v1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sidorded/git-hub-manager@v1
 ```
 
 3. Go to **Settings → Actions → General → Workflow permissions**.

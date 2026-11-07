@@ -1,0 +1,63 @@
+name: GitHub Activity Manager
+description: Automatically generate random GitHub activity commits.
+
+inputs:
+  probability:
+    description: "Commit probability for scheduled runs (0-100)"
+    required: false
+    default: "55"
+
+  token:
+    description: "GitHub token used to push commits"
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+  steps:
+    - name: Decide whether to commit
+      id: decision
+      shell: bash
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        PROBABILITY: ${{ inputs.probability }}
+      run: |
+        if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+          echo "commit=true" >> "$GITHUB_OUTPUT"
+          echo "Manual trigger: commit is mandatory!"
+        elif [ "$EVENT_NAME" = "schedule" ] && [ $((RANDOM % 100)) -lt "$PROBABILITY" ]; then
+          echo "commit=true" >> "$GITHUB_OUTPUT"
+          echo "Commit selected ($PROBABILITY%)!"
+        else
+          echo "commit=false" >> "$GITHUB_OUTPUT"
+          echo "Skipping this run."
+        fi
+
+    - name: Checkout repository
+      if: steps.decision.outputs.commit == 'true'
+      uses: actions/checkout@v6
+      with:
+        token: ${{ inputs.token }}
+
+    - name: Update activity file
+      if: steps.decision.outputs.commit == 'true'
+      shell: bash
+      run: |
+        date -u +"%Y-%m-%d %H:%M:%S UTC" > activity.txt
+
+    - name: Commit and push
+      if: steps.decision.outputs.commit == 'true'
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        git add activity.txt
+
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+          exit 0
+        fi
+
+        git commit -m "chore: update activity"
+        git push
