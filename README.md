@@ -45,7 +45,7 @@ jobs:
   activity-manager:
     runs-on: ubuntu-latest
     steps:
-      - uses: sidorded/git-hub-manager@v1
+      - uses: sidroded/git-hub-manager@v1
 ```
 
 3. Go to **Settings → Actions → General → Workflow permissions**.
